@@ -10,7 +10,6 @@ The following references are useful:
 ## Docker
 
 This project uses [Docker](https://www.docker.io/) to the minimise the need to install build dependencies onto the development machine.
-The rest of this README will assume you are running command from within the docker container.
 
 ### Build Docker Image
 
@@ -35,17 +34,21 @@ Port 35729 is also mapped to the host machine to allow live-reloading to work.
 Changes made to the files in the `/code` directory will be reflected in the code directory outside the Docker container (and vice versa).
 Any other changes made inside the Docker container however will be lost upon exiting the container.
 
-## Project Dependencies
+## Developing
+
+This section assumes you are running commands from within the docker container.
+
+### Project Dependencies
 
 To install dependencies run `npm install` followed by `bower install` (files will be installed to `/code/node_modules` and `/code/bower_components` respectively). 
 This only needs to be done once as these file are not committed to git.
 
-## Build for Development
+### Build for Development
 
 Use `grunt serve` to run the application on port 9000 while developing.
 Grunt will watch files for changes and live-reload the page in your browser.
 
-## Build for Production
+### Build for Production
 
 Use `grunt` to generate an optimized files (html, css, javascript, images, etc...) in the `dist` directory.
 Deploy to the files to a web server of your choice or use `grunt serve:dist` to host from within the container on port 9000.
