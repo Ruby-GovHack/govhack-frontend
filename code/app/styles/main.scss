@@ -1,0 +1,30 @@
+$icon-font-path: "../bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
+// bower:scss
+@import "bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
+// endbower
+
+/* Space out content a bit */
+body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* Page header */
+.header {
+  /* Make the masthead heading the same height as the navigation */
+  h3 {
+    margin-top: 0;
+    margin-bottom: 30px;
+    line-height: 40px;
+    padding-bottom: 19px;
+    border-bottom: 1px solid #e5e5e5;
+  }
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 838px) {
+  .container {
+    max-width: 810px;
+  }
+}
+

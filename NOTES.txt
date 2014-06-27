@@ -1,0 +1,7 @@
+The Radian library looks like a nice for simpler graphs: <http://openbrainsrc.github.io/Radian/index.html>
+
+D3 would be good for more complicated visualisations: <http://d3js.org/>
+Some tutorials are available here: <https://github.com/mbostock/d3/wiki/Tutorials>
+
+If we do use D3 it should be noted that is should only be used within angularjs directives.
+This document has some tips on integration D3 with AngularJS: <http://www.ng-newsletter.com/posts/d3-on-angular.html>
