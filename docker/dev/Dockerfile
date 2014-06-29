@@ -1,25 +1,24 @@
 # https://github.com/phusion/baseimage-docker
 FROM phusion/baseimage:0.9.10
 
+# Create user docker so we don't have to run everything as root.
+RUN useradd -d /home/docker -m -s /bin/bash docker
+
 # Install dependencies.
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs-legacy npm git
-
-# Dependencies for 2d-game
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y ruby-compass
 # These are needed by phantomjs, a dependency of generator-angular.
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y chrpath git-core libssl-dev libfontconfig1-dev
 RUN npm install --global yo generator-angular
 
-# Clean up after APT
+# Clean up some uneeded files.
 RUN DEBIAN_FRONTEND=noninteractive apt-get clean
 RUN rm -rf /var/lib/apt/lists/*
 RUN rm -rf /var/tmp/*
 RUN rm -rf /tmp/*
 
-# Create user docker so we don't have to run everything as root.
-RUN useradd -d /home/docker -m -s /bin/bash docker
 # cd into /code on login by docker
 RUN echo "cd /code" >> /home/docker/.bashrc
 
