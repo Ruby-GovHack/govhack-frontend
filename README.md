@@ -7,6 +7,7 @@ The following references are useful:
 * [How do I “think in AngularJS” if I have a jQuery background?](http://stackoverflow.com/a/15012542)
 * [Yeoman Codelab](http://yeoman.io/codelab.html)
 * [A Better Way to Learn AngularJS](http://www.thinkster.io/angularjs/GtaQ0oMGIl)
+* [AngularJS Cheat Sheet](http://www.cheatography.com/proloser/cheat-sheets/angularjs/)
 
 ## Dev
 
