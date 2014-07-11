@@ -5,3 +5,5 @@ Some tutorials are available here: <https://github.com/mbostock/d3/wiki/Tutorial
 
 If we do use D3 it should be noted that is should only be used within angularjs directives.
 This document has some tips on integration D3 with AngularJS: <http://www.ng-newsletter.com/posts/d3-on-angular.html>
+
+
