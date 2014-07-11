@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('govhackFrontendApp')
-  .directive('jsSampleChart', function () {
+  .directive('jsMap', function () {
     return {
       restrict: 'E',
       link: function postLink(scope, element, attrs) {
