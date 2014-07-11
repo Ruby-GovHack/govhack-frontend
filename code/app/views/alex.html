@@ -1,6 +1,3 @@
-<p ng-repeat="site in sites">
-  site: {{site.site}}
-</p>
-<p ng-repeat="temp in temps">
-  temp-max: {{temp.max}}
+<p ng-repeat="(key, value) in sites">
+  site: {{value.label}}
 </p>
