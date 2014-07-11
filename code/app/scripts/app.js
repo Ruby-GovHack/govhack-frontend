@@ -22,6 +22,18 @@ angular
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'
       })
+      .when('/alex', {
+        templateUrl: 'views/alex.html',
+        controller: 'AlexCtrl'
+      })
+      .when('/max', {
+        templateUrl: 'views/max.html',
+        controller: 'MaxCtrl'
+      })
+      .when('/majgan', {
+        templateUrl: 'views/majgan.html',
+        controller: 'MajganCtrl'
+      })
       .otherwise({
         template: '', // this is just needed to run the controller
         controller: function($http) {
