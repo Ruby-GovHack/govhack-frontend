@@ -28,8 +28,8 @@ angular.module('govhackFrontendApp')
       //     "072150": { "label": "Wagga Wagga", "lat": -35.158, "long": 147.457 },
       //     "072161": { "label": "Cabramurra", "lat": -35.937, "long": 148.378 }
       //   }
-      getSites: function(params) {
-        return sitesResource.get(params);
+      getSites: function(params, callback) {
+        return sitesResource.get(params, callback);
       },
 
       // Get timeseries. Results are cached.
