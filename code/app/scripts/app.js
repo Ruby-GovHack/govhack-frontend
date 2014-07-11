@@ -30,9 +30,9 @@ angular
         templateUrl: 'views/max.html',
         controller: 'MaxCtrl'
       })
-      .when('/majgan', {
-        templateUrl: 'views/majgan.html',
-        controller: 'MajganCtrl'
+      .when('/mojgan', {
+        templateUrl: 'views/mojgan.html',
+        controller: 'MojganCtrl'
       })
       .otherwise({
         template: '', // this is just needed to run the controller
