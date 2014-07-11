@@ -8,15 +8,14 @@ angular.module('govhackFrontendApp')
     var backendBaseUrl = 'http://api.rubygovhackers.org/v1';
 
     var sitesResource = $resource(
-      backendBaseUrl + '/:dataset/sites',
-      {},
-      {
-        list: {
-          method : 'GET',
-          cache : true
-        }
-      }
-    );
+      backendBaseUrl + '/sites/:dataset', {}, {
+        get: { method : 'GET', cache : true }
+    });
+
+    var timeseriesResource = $resource(
+      backendBaseUrl + '/:timeperiod/:dataset/:vars', {}, {
+        get: { method : 'GET', cache : true }
+    });
 
     return {
       // Get sites. Results are cached.
@@ -33,6 +32,7 @@ angular.module('govhackFrontendApp')
         return sitesResource.get(params);
       },
 
+      // Get timeseries. Results are cached.
       // Example usage:
       //   temps.query({
       //     timeperiod: 'monthly', // options 'daily', 'monthly', 'yearly'
@@ -52,6 +52,10 @@ angular.module('govhackFrontendApp')
       //     {"id": "072150", "max":20.32, "std-dev": 3.95 },
       //     {"id": "072161", "max":9.61, "std-dev": 3.62 }
       //   ]
-      timeseries: $resource(backendBaseUrl + '/:dataset/:timeperiod/:vars')
+      getTimeseries: function(params) {
+        sites = getSites();
+        timeseries = timeseriesResource.query(params);
+
+      },
     };
   });
