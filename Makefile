@@ -25,7 +25,7 @@ build-prod:
 
 build-prod-nocache:
 	cp "${BUILD_DIR}/docker/prod/Dockerfile" "${BUILD_DIR}/Dockerfile"
-	-docker build --no-cache -t ${IMAGE_NAME_PROD} "${BUILD_DIR}"
+	docker build --no-cache -t ${IMAGE_NAME_PROD} "${BUILD_DIR}"
 	rm "${BUILD_DIR}/Dockerfile"
 
 serve:
