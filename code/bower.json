@@ -14,7 +14,7 @@
     "angular-touch": "1.2.16",
     "angular-route": "1.2.16",
     "d3": "~3.4.8",
-    "rickshaw": "~1.5.0"
+    "rickshaw": "~1.5.0",
     "seiyria-bootstrap-slider": "~3.1.0"
   },
   "devDependencies": {
