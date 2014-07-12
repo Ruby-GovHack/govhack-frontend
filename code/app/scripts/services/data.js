@@ -28,8 +28,8 @@ angular.module('govhackFrontendApp')
       //     "072150": { "label": "Wagga Wagga", "lat": -35.158, "long": 147.457 },
       //     "072161": { "label": "Cabramurra", "lat": -35.937, "long": 148.378 }
       //   }
-      getSites: function(params, callback) {
-        return sitesResource.get(params, callback);
+      getSites: function(params) {
+        return sitesResource.get(params);
       },
 
       // Get timeseries. Results are cached.
@@ -52,8 +52,8 @@ angular.module('govhackFrontendApp')
       //     {"id": "072150", "max":20.32, "std-dev": 3.95 },
       //     {"id": "072161", "max":9.61, "std-dev": 3.62 }
       //   ]
-      getTimeseries: function(params, callback) {
-        return timeseriesResource.query(params, callback);
+      getTimeseries: function(params) {
+        return timeseriesResource.query(params);
       }
     };
   });
