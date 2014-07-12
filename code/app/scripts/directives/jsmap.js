@@ -43,7 +43,7 @@ angular.module('govhackFrontendApp')
         function dostuff() {
           d3.selectAll('.big')
             .transition()
-            .attr('r', rad + 8 + 'px')
+            .attr('r', rad + rad + 'px')
             .transition()
             .attr('r', rad + 'px');
           var curMonth = monthSlider.slider('getValue');
@@ -51,6 +51,7 @@ angular.module('govhackFrontendApp')
           ++curYear;
           //monthSlider.slider('setValue', curMonth);
           yearSlider.slider('setValue', curYear % yearSlider.slider('getAttribute', 'max'));
+          $('#display-date').text(months[curMonth] + ', ' + curYear);
         }
 
         function updateData(response) {
@@ -67,14 +68,28 @@ angular.module('govhackFrontendApp')
           $(site)
             .attr('transform', 'translate(' + (pos.x - auTLP.x) + ', ' + (pos.y - auTLP.y) + ')');
         }
+        
+        function showData(d)
+        {
+          $('#map-info').html(
+            '<div class="info-label">' + d.label + '</div>' +
+            '<div class="info-text">' + 
+            '<div class="row">' +
+            '<div class="col-lg-5">Latitude:</div>' +
+            '<div class="col-lg-7">' + d.lat + '</div>' +
+            '<div class="col-lg-5">Longitude:</div>' +
+            '<div class="col-lg-7">' + d.long + '</div>' +
+            '</div>' +
+            '</div>'
+          );
+        }
 
         function initialize() {
           var map = new google.maps.Map(document.getElementById('map'), {
             center: auC,
             zoom:4,
-            mapTypeId:google.maps.MapTypeId.TERRAIN,
             disableDefaultUI: true,
-            styles: [{"featureType":"administrative","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"hue":"#EEDD33"},{"lightness":-40},{"saturation":-30}]},{"featureType":"water","elementType":"all","stylers":[{"visibility":"simplified"},{"hue":"#ffffff"},{"lightness":100},{"saturation":100}]}]
+            styles: [{"featureType":"administrative","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"hue":"#d0e19a"},{"lightness":-45},{"saturation":-60}]},{"featureType":"water","elementType":"all","stylers":[{"visibility":"simplified"},{"hue":"#ffffff"},{"lightness":100},{"saturation":100}]}]
           });
 
           overlay = new google.maps.OverlayView();
@@ -89,7 +104,7 @@ angular.module('govhackFrontendApp')
               auBRP = projection.fromLatLngToDivPixel(auBR);
               auCP = projection.fromLatLngToDivPixel(auC);
 
-              rad = (auBRP.x - auTLP.x) / 160;
+              rad = (auBRP.x - auTLP.x) / 800 + 5;
 
               svg.style('left', auTLP.x + 'px')
                 .style('top', auTLP.y + 'px')
@@ -116,22 +131,19 @@ angular.module('govhackFrontendApp')
                 .attr('r', rad)
                 .attr('cx', 0)
                 .attr('cy', 0)
-                .attr('fill', '#ff0000')
+                .attr('fill', '#ff0000');
               svg.selectAll('g')
-                .on('mouseover', function(e) {
+                .select('.small')
+                .on('mousemove', function(e) {
                   if (currentMouseOver != this)
                   {
                     currentMouseOver = this;
-                    $('#map-info')
-                      .css('left', mouseX + 10 + 'px')
-                      .css('top', mouseY + 'px')
-                      .show();
+                    showData(scope.sites[this.__data__]);
                   }
-                  else
-                  {
-                    $('#map-info')
-                      .show();
-                  }
+                  $('#map-info')
+                    .css('left', mouseX + 10 + 'px')
+                    .css('top', mouseY - 60 + 'px')
+                    .show();
                 })
                 .on('mouseout', function(e) {
                   if (currentMouseOver == this)

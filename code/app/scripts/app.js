@@ -34,6 +34,10 @@ angular
         templateUrl: 'views/mojgan.html',
         controller: 'MojganCtrl'
       })
+      .when('/team-members', {
+        templateUrl: 'views/team-members.html',
+        controller: 'TeamMembersCtrl'
+      })
       .otherwise({
         template: '', // this is just needed to run the controller
         controller: function($http) {
