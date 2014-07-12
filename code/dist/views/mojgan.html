@@ -1,1 +1,14 @@
-<p>This is the mojgan view: {{test}} - {{testInput}}</p> <form ng-submit="testSubmit()"> <input type="text" ng-model="testInput"> <input class="btn-primary" type="submit" value="add"> </form> <div id="image" align="center"> <br><hr> <img ng-src="http://www.cgsociety.org/stories/2008_05/siggmother/image1.jpg" width="100" height="100"> URL image &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img ng-src="{{&quot;http://mojuntu:9000/images/belconnen-bus.jpg&quot;}}" width="150" height="100"> Local file image <hr><br></div> hello <timeseries></timeseries> 
+<!--<p>This is the mojgan view: {{test}} - {{testInput}}</p>
+<form ng-submit="testSubmit()">
+<input type="text" ng-model="testInput"></input>
+<input class="btn-primary" type="submit" value="add">
+</form>
+<div id="image" align="center">
+<br/><hr>
+<img ng-src="http://www.cgsociety.org/stories/2008_05/siggmother/image1.jpg"  width= "100" height="100" />
+URL image
+
+<img ng-src={{"/images/belconnen-bus.jpg"}} width="150" height="100">
+Local file image
+<hr><br/></div>
+--> <div> <timeseries></timeseries> </div>
