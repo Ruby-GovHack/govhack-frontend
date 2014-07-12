@@ -24,7 +24,7 @@ RUN chown -R docker /code
 
 RUN su -l docker -c "cd /code; npm install"
 RUN su -l docker -c "cd /code; bower install"
-RUN su -l docker -c "cd /code; grunt --force"
+RUN su -l docker -c "cd /code; grunt build"
 
 # Clean up some uneeded files.
 RUN DEBIAN_FRONTEND=noninteractive apt-get clean
