@@ -29,14 +29,7 @@ build-prod-nocache:
 	rm "${BUILD_DIR}/Dockerfile"
 
 serve:
-	docker run -d --name="${CONTAINER_NAME_PROD}" --hostname="${CONTAINER_NAME_PROD}" -p 80:9000 ${IMAGE_NAME_PROD}
-
-ssh:
-	ssh -i "${BUILD_DIR}/docker/prod/${CONTAINER_NAME_PROD}.key" root@$(shell docker inspect --format="{{ .NetworkSettings.IPAddress }}" ${CONTAINER_NAME_PROD})
-
-sshkeygen:
-	ssh-keygen -t rsa -f "${BUILD_DIR}/docker/prod/${CONTAINER_NAME_PROD}.key"
-	chmod 600 "${BUILD_DIR}/docker/prod/${CONTAINER_NAME_PROD}.key"
+	docker run -d --name="${CONTAINER_NAME_PROD}" --hostname="${CONTAINER_NAME_PROD}" -p 80:80 ${IMAGE_NAME_PROD}
 
 stop:
 	-docker stop ${CONTAINER_NAME_PROD}
