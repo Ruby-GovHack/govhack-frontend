@@ -2,12 +2,6 @@
 
 angular.module('govhackFrontendApp')
   .directive('jsTimeseries', function (data) {
-    // Convert date string to unix timestamp (seconds since epoch).
-    var toUnixTime = function(format, dateString) {
-      var date = d3.time.format(format).parse(dateString).getTime();
-      return Math.round(date / 1000);
-    };
-
     return {
       templateUrl: 'views/jstimeseries.html',
       restrict: 'E',
@@ -15,25 +9,28 @@ angular.module('govhackFrontendApp')
         data.getTimeseries({
            'timeperiod': 'monthly',
            'dataset': 'acorn-sat',
-           'site': '001019',
-           'max-temp': true
+           'site': '023090',
+           'high_max_temp': true
         }).$promise.then(function(timeseries) {
           var maxTempMin = null;
           var maxTempMax = null;
 
           var maxTempData = [];
           for (var i = 0; i < timeseries.length; i++) {
-            var maxTemp = timeseries[i].high_max_temp;
-            if (maxTempMin === null || maxTemp < maxTempMin) {
-              maxTempMin = maxTemp;
+            var date = moment(timeseries[i].month, 'MM-YYYY');
+            if (date.month() === 0) {
+              var maxTemp = timeseries[i].high_max_temp;
+              if (maxTempMin === null || maxTemp < maxTempMin) {
+                maxTempMin = maxTemp;
+              }
+              if (maxTempMax === null || maxTemp > maxTempMax) {
+                maxTempMax = maxTemp;
+              }
+              maxTempData.push({
+                x: date.unix(),
+                y: maxTemp
+              });
             }
-            if (maxTempMax === null || maxTemp > maxTempMax) {
-              maxTempMax = maxTemp;
-            }
-            maxTempData.push({
-              x: toUnixTime('%m-%Y', timeseries[i].month),
-              y: maxTemp
-            });
           }
 
           var maxTempScale = d3.scale.linear()
@@ -68,10 +65,10 @@ angular.module('govhackFrontendApp')
           });
 
           new Rickshaw.Graph.HoverDetail({
-            graph: graph
-            // xFormatter: function(x) {
-            //   return new Date(x * 1000).toString();
-            // }
+            graph: graph,
+            xFormatter: function(x) {
+              return moment.unix(x).format('MMM YYYY');
+            }
           });
 
           new Rickshaw.Graph.RangeSlider({

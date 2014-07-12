@@ -46,13 +46,6 @@ angular.module('govhackFrontendApp')
       //     'south': -36.0,
       //     'west': 147.2
       //   })
-      // Returns:
-      //   [
-      //     {"id": "069018", "max":20.02, "std-dev": 5.11 },
-      //     {"id": "070351", "max":18.48, "std-dev": 3.95 },
-      //     {"id": "072150", "max":20.32, "std-dev": 3.95 },
-      //     {"id": "072161", "max":9.61, "std-dev": 3.62 }
-      //   ]
       getTimeseries: function(params) {
         return timeseriesResource.query(params);
       }

@@ -8,7 +8,6 @@
 // 'test/spec/**/*.js'
 
 module.exports = function (grunt) {
-
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
 
@@ -272,7 +271,7 @@ module.exports = function (grunt) {
     uglify: {
       options: {
         mangle: {
-          // This is need to mack Rickshaw work after minification.  
+          // This is needed to make Rickshaw work after minification.
           except: ['$super']
         }
       }
