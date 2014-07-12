@@ -14,8 +14,8 @@
       opacity: 0.3;
     }
     .small {
-      fill: #FFaaaa;
-      opacity: 0.5;
+      fill: #aaa;
+      opacity: 0.8;
     }
   }
 }
@@ -26,6 +26,12 @@
   padding: 20px;
   div {
     padding-left: 10px;
+  }
+  .radio {
+    height: 10px;
+  }
+  h2, h3, h4 {
+    margin: 0px;
   }
 }
 #map-info {
@@ -58,17 +64,25 @@
   }
 }
 .slader-handle {
-  position: absolute;
-  width: 20px;
-  height: 20px;
+  outline-color: #9d0000;
   background-color: #a50000;
   background-image: -webkit-linear-gradient(top, #c80000 0%, #ae0000 100%);
   background-image: linear-gradient(to bottom, #c80000 0%, #ae0000 100%);
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffc80000', endColorstr='#ffae0000', GradientType=0);
   filter: none;
-  -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
-  opacity: 0.9;
-  border: 0px solid transparent;
+}
+
+#button-play {
+  float: right;
+  width: 150px;
+  margin: 4px 10px;
+  outline-color: #B60000;
+  background-color: #C80000;
+  border-color: #C00000;
+}
+
+#button-play:hover {
+  background-color: #B60000;
+  border-color: #AE0000;
 }

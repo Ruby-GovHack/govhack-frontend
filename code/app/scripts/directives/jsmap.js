@@ -8,8 +8,16 @@ angular.module('govhackFrontendApp')
       link: function postLink(scope, element) {
         var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         
+        var playing = false;
+        
+        var curMonth = 0;
+        var curYear = 0;
+        
+        var tempRange = [-10, 60];
+        
         scope.sites = {};
         var overlay;
+        var svg;
 
         var currentMouseOver;
         var mouseX = 0;
@@ -32,6 +40,13 @@ angular.module('govhackFrontendApp')
           return months[val];
         }
         
+        $('#button-play').click(function() {
+          playing = !playing;
+          $(this).find('span')
+            .toggleClass('glyphicon-play')
+            .toggleClass('glyphicon-pause');
+        });
+        
         var yearSlader = $('#year-slader').slader({
           tooltip: 'always'
         });
@@ -41,20 +56,32 @@ angular.module('govhackFrontendApp')
         });
         
         function dostuff() {
-          d3.selectAll('.big')
-            .transition()
-            .attr('r', rad + rad + 'px')
-            .transition()
-            .attr('r', rad + 'px');
-          var curMonth = monthSlader.slader('getValue');
-          var curYear = yearSlader.slader('getValue');
-          ++curYear;
-          //monthSlader.slader('setValue', curMonth);
-          yearSlader.slader('setValue', curYear % yearSlader.slader('getAttribute', 'max'));
-          $('#display-date').text(months[curMonth] + ', ' + curYear);
-          
+          if (playing)
+          {
+            /*d3.selectAll('.big')
+              .transition()
+              .attr('r', rad + rad + 'px')
+              .transition()
+              .attr('r', rad + 'px');*/
+            curMonth = monthSlader.slader('getValue');
+            curYear = yearSlader.slader('getValue');
+            ++curYear;
+            //monthSlader.slader('setValue', curMonth);
+            yearSlader.slader('setValue', curYear % yearSlader.slader('getAttribute', 'max'));
+            $('#display-date-month').text(months[curMonth]);
+            $('#display-date-year').text(curYear);
+            updateSites();
+          }
         }
-
+        
+        function updateSites()
+        {
+          svg.selectAll('g')
+            .each(function(d) {
+              alignSite(this, scope.sites[d]);
+            });
+        }
+                
         function updateData(response) {
           scope.sites = response.data;
           //$.each(response, function(key, val) {
@@ -62,8 +89,8 @@ angular.module('govhackFrontendApp')
             //  scope.sites[key] = val;
             //}
           //});
-          scope['023090'].data = {};
-          $.extend(scope['023090'].data, {
+          scope.sites['023090'].data = {};
+          $.extend(scope.sites['023090'].data, {
             "200501":{"month":"01-2005","high_max_temp":41.8},
             "200502":{"month":"02-2005","high_max_temp":42.8},
             "200503":{"month":"03-2005","high_max_temp":33.8},
@@ -92,6 +119,22 @@ angular.module('govhackFrontendApp')
           var pos = projection.fromLatLngToDivPixel(new google.maps.LatLng(d.lat, d.long));
           $(site)
             .attr('transform', 'translate(' + (pos.x - auTLP.x) + ', ' + (pos.y - auTLP.y) + ')');
+          if (site !== currentMouseOver) {
+            if (typeof d.data !== 'undefined' && typeof d.data[curYear * 100 + curMonth] !== 'undefined') {
+              d3.select(site)
+                .select('.small')
+                  .transition()
+                  .style('fill', '#ffaa00')
+                  .attr('r', rad + rad * d.data[curYear * 100 + curMonth].high_max_temp / tempRange[1]);
+            } else {
+              d3.select(site)
+                .select('.small')
+                  .transition()
+                  .style('fill', '')
+                  .style('opacity', '')
+                  .attr('r', rad);
+            }
+          }
         }
         
         function showData(d)
@@ -129,7 +172,7 @@ angular.module('govhackFrontendApp')
               },{
                 "featureType": "landscape",
                 "stylers": [
-                  { "saturation": -70 },
+                  { "saturation": -60 },
                   { "lightness": -60 },
                   { "gamma": 0 },
                   { "hue": "#ff0000" }
@@ -141,7 +184,7 @@ angular.module('govhackFrontendApp')
           overlay = new google.maps.OverlayView();
           overlay.onAdd = function()
           {
-            var svg = d3.select(this.getPanes().overlayLayer).append('svg');
+            svg = d3.select(this.getPanes().overlayLayer).append('svg');
             overlay.draw = function() {
 
               projection = this.getProjection();
@@ -150,7 +193,7 @@ angular.module('govhackFrontendApp')
               auBRP = projection.fromLatLngToDivPixel(auBR);
               auCP = projection.fromLatLngToDivPixel(auC);
 
-              rad = (auBRP.x - auTLP.x) / 800 + 5;
+              rad = (auBRP.x - auTLP.x) / 800 + 4;
 
               svg.style('left', auTLP.x + 'px')
                 .style('top', auTLP.y + 'px')
@@ -181,29 +224,28 @@ angular.module('govhackFrontendApp')
               svg.selectAll('g')
                 .select('.small')
                 .on('mousemove', function() {
-                  if (currentMouseOver !== this)
+                  if (currentMouseOver !== this.parentNode)
                   {
-                    currentMouseOver = this;
+                    currentMouseOver = this.parentNode;
                     showData(scope.sites[this.__data__]);
-                    $(this).css('fill', '#ffffff');
                   }
+                  d3.select(this)
+                    .style('fill', '#ffffff')
+                    .style('opacity', '1')
+                    .attr('r', rad * 2);
                   $('#map-info')
                     .css('left', mouseX + 10 + 'px')
                     .css('top', mouseY - 60 + 'px')
-                    .show();
+                    .slideDown(50);
                 })
                 .on('mouseout', function() {
-                  $(this).css('fill', '');
-                  if (currentMouseOver === this)
-                  {
-                    currentMouseOver = this;
-                    $('#map-info')
-                      .hide();
-                  }
+                  currentMouseOver = null;
+                  alignSite(this.parentNode, scope.sites[this.__data__]);
+                  $('#map-info')
+                    .slideUp(50);
                 });
 
-              svg.selectAll('g')
-                .each(function(d) { alignSite(this, scope.sites[d]); });
+              updateSites();
             };
           };
           overlay.setMap(map);
