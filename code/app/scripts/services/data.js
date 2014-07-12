@@ -7,11 +7,14 @@ angular.module('govhackFrontendApp')
   .factory('data', function ($resource) {
     var backendBaseUrl = 'http://api.rubygovhackers.org/v1';
 
+    // Wrap JSON with an extra object layer so that angular can
+    // add it's properties but we can still loop over the actual
+    // properties of the object.
     var dataWrapper = function(dataString) {
       var data = JSON.parse(dataString);
       return {
         data: data
-      }
+      };
     };
 
     var sitesResource = $resource(
@@ -27,7 +30,8 @@ angular.module('govhackFrontendApp')
       backendBaseUrl + '/timeseries/:timeperiod/:dataset', {}, {
         get: {
           method : 'GET',
-          cache : true
+          cache : true,
+          transformResponse: dataWrapper
         }
     });
 
@@ -54,7 +58,7 @@ angular.module('govhackFrontendApp')
       //     'west': 147.2
       //   })
       getTimeseries: function(params) {
-        return timeseriesResource.query(params);
+        return timeseriesResource.get(params);
       }
     };
   });
