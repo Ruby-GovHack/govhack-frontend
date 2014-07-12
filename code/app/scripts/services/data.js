@@ -37,6 +37,7 @@ angular.module('govhackFrontendApp')
       //   temps.query({
       //     'timeperiod': 'monthly', // options 'daily', 'monthly', 'yearly'
       //     'dataset': 'acorn-sat',
+      //     'site': '069018' // see getSites()
       //     'max-temp': true,
       //     'max-temp-std-dev': true,
       //     'time': '09-2008', // DD-MM-YYYY depending on timeperiod
