@@ -8,5 +8,14 @@
     top: 100px;
     width: 10px;
     height: 10px;
+    .big {
+      fill: #ffaa00;
+    }
+    .small {
+      fill: #ff0000;
+    }
   }
+}
+#date-slider {
+  width: 100%;
 }
