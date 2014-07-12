@@ -6,16 +6,20 @@ angular.module('govhackFrontendApp')
       templateUrl: 'views/jsmap.html',
       restrict: 'E',
       link: function postLink(scope, element) {
-        $('#date-slider').slider({
+        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      
+        var yearSlider = $('#year-slider').slider({
           tooltip: 'always'
         });
+        var monthSlider = $('#month-slider').slider({
+          tooltip: 'always',
+          formater: monthFormatter
+        });
+        
         scope.sites = {};
         var overlay;
-        /*for (var i = 0; i < 20; ++i) {
-            siteData.push([Math.random() * 20 - 37, Math.random() * 20 + 123])
-        }*/
 
-        //var jData = $.parseJSON('[ {"id": "069018", "site": "Moruya Heads", "lat": -35.909, "long": 150.153 }, {"id": "070351", "site": "Canberra", "lat": -35.309, "long": 149.2 }, {"id": "072150", "site": "Wagga Wagga", "lat": -35.158, "long": 147.457 }, {"id": "072161", "site": "Cabramurra", "lat": -35.937, "long": 148.378 } ]');
+        
         var auTL = new google.maps.LatLng(-5, 110);
         var auC = new google.maps.LatLng(-28, 133);
         var auBR = new google.maps.LatLng(-49, 156);
@@ -25,12 +29,21 @@ angular.module('govhackFrontendApp')
         var projection;
         var rad = 0;
 
+        function monthFormatter(val) {
+          return months[val];
+        }
+        
         function dostuff() {
           d3.selectAll('.big')
             .transition()
-            .attr('r', rad + 8 + 'px')
+            .attr('r', rad + 4 + 'px')
             .transition()
             .attr('r', rad + 'px');
+          var curMonth = monthSlider.slider('getValue');
+          var curYear = yearSlider.slider('getValue');
+          ++curYear;
+          //monthSlider.slider('setValue', curMonth);
+          yearSlider.slider('setValue', curYear % yearSlider.slider('getAttribute', 'max'));
         }
 
         function updateData(response) {
@@ -52,7 +65,8 @@ angular.module('govhackFrontendApp')
           var map = new google.maps.Map(document.getElementById('map'), {
             center: auC,
             zoom:4,
-            mapTypeId:google.maps.MapTypeId.TERRAIN
+            mapTypeId:google.maps.MapTypeId.TERRAIN,
+            styles: [{"featureType":"administrative","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"hue":"#727D82"},{"lightness":-30},{"saturation":-80}]},{"featureType":"water","elementType":"all","stylers":[{"visibility":"simplified"},{"hue":"#F3F4F4"},{"lightness":80},{"saturation":-80}]}]
           });
 
           overlay = new google.maps.OverlayView();
@@ -67,7 +81,7 @@ angular.module('govhackFrontendApp')
               auBRP = projection.fromLatLngToDivPixel(auBR);
               auCP = projection.fromLatLngToDivPixel(auC);
 
-              rad = (auBRP.x - auTLP.x) / 80;
+              rad = (auBRP.x - auTLP.x) / 160;
 
               svg.style('left', auTLP.x + 'px')
                 .style('top', auTLP.y + 'px')
