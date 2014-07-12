@@ -7,14 +7,6 @@ angular.module('govhackFrontendApp')
       restrict: 'E',
       link: function postLink(scope, element) {
         var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-      
-        var yearSlider = $('#year-slider').slider({
-          tooltip: 'always'
-        });
-        var monthSlider = $('#month-slider').slider({
-          tooltip: 'always',
-          formater: monthFormatter
-        });
         
         scope.sites = {};
         var overlay;
@@ -40,25 +32,58 @@ angular.module('govhackFrontendApp')
           return months[val];
         }
         
+        var yearSlader = $('#year-slader').slader({
+          tooltip: 'always'
+        });
+        var monthSlader = $('#month-slader').slader({
+          tooltip: 'always',
+          formater: monthFormatter
+        });
+        
         function dostuff() {
           d3.selectAll('.big')
             .transition()
             .attr('r', rad + rad + 'px')
             .transition()
             .attr('r', rad + 'px');
-          var curMonth = monthSlider.slider('getValue');
-          var curYear = yearSlider.slider('getValue');
+          var curMonth = monthSlader.slader('getValue');
+          var curYear = yearSlader.slader('getValue');
           ++curYear;
-          //monthSlider.slider('setValue', curMonth);
-          yearSlider.slider('setValue', curYear % yearSlider.slider('getAttribute', 'max'));
+          //monthSlader.slader('setValue', curMonth);
+          yearSlader.slader('setValue', curYear % yearSlader.slader('getAttribute', 'max'));
           $('#display-date').text(months[curMonth] + ', ' + curYear);
+          
         }
 
         function updateData(response) {
-          scope.sites = {};
-          $.each(response, function(key, val) {
-            if (/^[0-9]{6}$/.test(key))
-              scope.sites[key] = val;
+          scope.sites = response.data;
+          //$.each(response, function(key, val) {
+            //if (/^[0-9]{6}$/.test(key)) {
+            //  scope.sites[key] = val;
+            //}
+          //});
+          scope['023090'].data = {};
+          $.extend(scope['023090'].data, {
+            "200501":{"month":"01-2005","high_max_temp":41.8},
+            "200502":{"month":"02-2005","high_max_temp":42.8},
+            "200503":{"month":"03-2005","high_max_temp":33.8},
+            "200504":{"month":"04-2005","high_max_temp":34.8},
+            "200505":{"month":"05-2005","high_max_temp":35.8},
+            "200506":{"month":"06-2005","high_max_temp":36.8},
+            "200507":{"month":"07-2005","high_max_temp":37.7},
+            "200508":{"month":"08-2005","high_max_temp":48.8},
+            "200509":{"month":"09-2005","high_max_temp":49.9},
+            "200510":{"month":"10-2005","high_max_temp":41.0},
+            "200511":{"month":"11-2005","high_max_temp":41.1},
+            "200512":{"month":"12-2005","high_max_temp":21.2},
+            "200601":{"month":"01-2006","high_max_temp":21.1},
+            "200602":{"month":"02-2006","high_max_temp":21.2},
+            "200603":{"month":"03-2006","high_max_temp":21.3},
+            "200604":{"month":"04-2006","high_max_temp":21.4},
+            "200605":{"month":"05-2006","high_max_temp":21.5},
+            "200606":{"month":"06-2006","high_max_temp":11.6},
+            "200607":{"month":"07-2006","high_max_temp":11.7},
+            "200608":{"month":"08-2006","high_max_temp":41.8}
           });
           overlay.draw();
         }
@@ -89,7 +114,28 @@ angular.module('govhackFrontendApp')
             center: auC,
             zoom:4,
             disableDefaultUI: true,
-            styles: [{"featureType":"administrative","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"hue":"#d0e19a"},{"lightness":-45},{"saturation":-60}]},{"featureType":"water","elementType":"all","stylers":[{"visibility":"simplified"},{"hue":"#ffffff"},{"lightness":100},{"saturation":100}]}]
+            styles: [
+              {
+                "elementType": "labels",
+                "stylers": [
+                  { "visibility": "off" }
+                ]
+              },{
+                "featureType": "water",
+                "stylers": [
+                  { "visibility": "simplified" },
+                  { "color": "#FFFFFF" }
+                ]
+              },{
+                "featureType": "landscape",
+                "stylers": [
+                  { "saturation": -70 },
+                  { "lightness": -60 },
+                  { "gamma": 0 },
+                  { "hue": "#ff0000" }
+                ]
+              }
+            ]
           });
 
           overlay = new google.maps.OverlayView();
@@ -134,19 +180,21 @@ angular.module('govhackFrontendApp')
                 .attr('fill', '#ff0000');
               svg.selectAll('g')
                 .select('.small')
-                .on('mousemove', function(e) {
-                  if (currentMouseOver != this)
+                .on('mousemove', function() {
+                  if (currentMouseOver !== this)
                   {
                     currentMouseOver = this;
                     showData(scope.sites[this.__data__]);
+                    $(this).css('fill', '#ffffff');
                   }
                   $('#map-info')
                     .css('left', mouseX + 10 + 'px')
                     .css('top', mouseY - 60 + 'px')
                     .show();
                 })
-                .on('mouseout', function(e) {
-                  if (currentMouseOver == this)
+                .on('mouseout', function() {
+                  $(this).css('fill', '');
+                  if (currentMouseOver === this)
                   {
                     currentMouseOver = this;
                     $('#map-info')
