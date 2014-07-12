@@ -18,16 +18,21 @@ body {
     line-height: 40px;
     padding-bottom: 19px;
     border-bottom: 1px solid #e5e5e5;
+    
   }
    a:hover  {
     text-decoration: none;     
     h3 {
-      color: #C80000 ;
+      color: #999999;
     }
-  }
-  a{
-    color: #C80000;
-   }
+  }  
+   .text-muted {
+      color: #C80000;
+    }
+    
+    a {
+      color: #C80000;
+    }
  
 }
 /* Responsive: Portrait tablets and up */
