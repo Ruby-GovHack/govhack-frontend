@@ -7,27 +7,34 @@ angular.module('govhackFrontendApp')
   .factory('data', function ($resource) {
     var backendBaseUrl = 'http://api.rubygovhackers.org/v1';
 
+    var dataWrapper = function(dataString) {
+      var data = JSON.parse(dataString);
+      return {
+        data: data
+      }
+    };
+
     var sitesResource = $resource(
       backendBaseUrl + '/sites/:dataset', {}, {
-        get: { method : 'GET', cache : true }
+        get: {
+          method : 'GET',
+          cache : true,
+          transformResponse: dataWrapper
+        }
     });
 
     var timeseriesResource = $resource(
       backendBaseUrl + '/timeseries/:timeperiod/:dataset', {}, {
-        get: { method : 'GET', cache : true }
+        get: {
+          method : 'GET',
+          cache : true
+        }
     });
 
     return {
       // Get sites. Results are cached.
       // Example usage:
       //   getSites({ 'dataset': 'acorn-sat' })
-      // Returns:
-      //   {
-      //     "069018": { "label": "Moruya Heads", "lat": -35.909, "long": 150.153 },
-      //     "070351": { "label": "Canberra", "lat": -35.309, "long": 149.2 },
-      //     "072150": { "label": "Wagga Wagga", "lat": -35.158, "long": 147.457 },
-      //     "072161": { "label": "Cabramurra", "lat": -35.937, "long": 148.378 }
-      //   }
       getSites: function(params) {
         return sitesResource.get(params);
       },

@@ -16,10 +16,10 @@ angular.module('govhackFrontendApp')
           var maxTempMax = null;
 
           var maxTempData = [];
-          for (var i = 0; i < timeseries.length; i++) {
-            var date = moment(timeseries[i].month, 'MM-YYYY');
+          timeseries.forEach(function(observation) {
+            var date = moment(observation.month, 'MM-YYYY');
             if (date.month() === 0) {
-              var maxTemp = timeseries[i].high_max_temp;
+              var maxTemp = observation.high_max_temp;
               if (maxTempMin === null || maxTemp < maxTempMin) {
                 maxTempMin = maxTemp;
               }
@@ -31,7 +31,7 @@ angular.module('govhackFrontendApp')
                 y: maxTemp
               });
             }
-          }
+          });
 
           var maxTempScale = d3.scale.linear()
             .domain([maxTempMin, maxTempMax])
