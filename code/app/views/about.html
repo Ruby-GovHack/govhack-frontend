@@ -1,1 +1,17 @@
-<p>This is the about view.</p>
+<h4> About RubyGovhackers </h4>
+<img src="/images/ruby.jpg"/><br/><br/>
+<div align="center-align">
+<p>Our project aims to illustrate climate trends by visualising temperatures over time, 
+and potentially other time-series data, on a map of Australia. Record breaking temperatures, 
+for example 'The highest maximum temperature for Perth in September since 1995', will be highlighted. </p>
+<br/>
+<p>For this version of the project, 
+data is pulled from the ACORN-SAT data provided by BoM and CSIRO at data.gov.au.</p>
+<br/>
+<h5><b>Our project has two components with high cohesion and loose coupling:</b></h5>
+<p>- The Visualiser uses D3, Angular.js and Google Maps to display the data, which it draws from an API provided by the Analyser.</p><br/>
+<p>- The Analyser uses Ruby, Sinatra and MongoDB to fetch, analyse, cache and serve the data with a generic API, documented at the root level of the URL.
+ The Analyser will cache a set of 10 year rolling data 
+ (eg highest temperature in that month at that location for the last 10 years)
+ to allow the highlighting of record breaking data.</p>
+ </div>
