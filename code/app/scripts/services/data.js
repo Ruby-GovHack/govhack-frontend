@@ -13,14 +13,14 @@ angular.module('govhackFrontendApp')
     });
 
     var timeseriesResource = $resource(
-      backendBaseUrl + '/:timeperiod/:dataset/:vars', {}, {
+      backendBaseUrl + '/timeseries/:timeperiod/:dataset', {}, {
         get: { method : 'GET', cache : true }
     });
 
     return {
       // Get sites. Results are cached.
       // Example usage:
-      //   getSites({ dataset: 'acorn-sat' })
+      //   getSites({ 'dataset': 'acorn-sat' })
       // Returns:
       //   {
       //     "069018": { "label": "Moruya Heads", "lat": -35.909, "long": 150.153 },
@@ -35,15 +35,15 @@ angular.module('govhackFrontendApp')
       // Get timeseries. Results are cached.
       // Example usage:
       //   temps.query({
-      //     timeperiod: 'monthly', // options 'daily', 'monthly', 'yearly'
-      //     dataset: 'acorn-sat'
-      //     // any combination of 'min-temp', 'max-temp', 'mean-temp' seperated by '+'
-      //     var: 'min-temp+max-temp+mean-temp',
-      //     time: '200809', // YYYYMMDD depending on timeperiod
-      //     north: -35.0,
-      //     east: 150.5,
-      //     south: -36.0,
-      //     west: 147.2
+      //     'timeperiod': 'monthly', // options 'daily', 'monthly', 'yearly'
+      //     'dataset': 'acorn-sat',
+      //     'max-temp': true,
+      //     'max-temp-std-dev': true,
+      //     'time': '09-2008', // DD-MM-YYYY depending on timeperiod
+      //     'north': -35.0,
+      //     'east': 150.5,
+      //     'south': -36.0,
+      //     'west': 147.2
       //   })
       // Returns:
       //   [
@@ -52,10 +52,8 @@ angular.module('govhackFrontendApp')
       //     {"id": "072150", "max":20.32, "std-dev": 3.95 },
       //     {"id": "072161", "max":9.61, "std-dev": 3.62 }
       //   ]
-      getTimeseries: function(params) {
-        sites = getSites();
-        timeseries = timeseriesResource.query(params);
-
-      },
+      getTimeseries: function(params, callback) {
+        return timeseriesResource.query(params, callback);
+      }
     };
   });
