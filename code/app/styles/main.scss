@@ -19,15 +19,17 @@ body {
     padding-bottom: 19px;
     border-bottom: 1px solid #e5e5e5;
   }
-   a:hover {
+   a:hover  {
     text-decoration: none;     
     h3 {
       color: #C80000 ;
     }
   }
-  
+  a{
+    color: #C80000;
+   }
+ 
 }
-
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 838px) {
   .container {
@@ -35,5 +37,9 @@ body {
   }
 }
 
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+  color: white;
+  background-color: #C80000;
+}
   
 
