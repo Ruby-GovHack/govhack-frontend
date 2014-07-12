@@ -1,19 +1,22 @@
 <style>
 #chart_container {
-        position: relative;
+        display: inline-block;
         font-family: Arial, Helvetica, sans-serif;
 }
 #chart {
-        position: relative;
-        left: 40px;
+        float: left;
 }
-.rickshaw_graph .y_ticks {
-        left: 0;
+#legend {
+        float: left;
+        margin-left: 15px;
+}
+#offset_form {
+        float: left;
+        margin: 2em 0 0 15px;
+        font-size: 13px;
 }
 #y_axis {
-        position: absolute;
-        top: 0;
-        bottom: 0;
+        float: left;
         width: 40px;
 }
 </style>
@@ -21,4 +24,13 @@
 <div id="chart_container">
         <div id="y_axis"></div>
         <div id="chart"></div>
+        <div id="legend"></div>
+        <form id="offset_form" class="toggler">
+                <input type="radio" name="offset" id="lines" value="lines" checked>
+                <label class="lines" for="lines">lines</label><br>
+                <input type="radio" name="offset" id="stack" value="zero">
+                <label class="stack" for="stack">stack</label>
+        </form>
 </div>
+
+<!--<link rel="stylesheet" href="bower_components/rickshaw/rickshaw.css">-->
