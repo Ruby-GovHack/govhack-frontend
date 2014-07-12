@@ -19,7 +19,9 @@ angular.module('govhackFrontendApp')
         scope.sites = {};
         var overlay;
 
-        
+        var currentMouseOver;
+        var mouseX = 0;
+        var mouseY = 0;
         var auTL = new google.maps.LatLng(-5, 110);
         var auC = new google.maps.LatLng(-28, 133);
         var auBR = new google.maps.LatLng(-49, 156);
@@ -29,6 +31,11 @@ angular.module('govhackFrontendApp')
         var projection;
         var rad = 0;
 
+        $(document).bind('mousemove', function(e) { 
+          mouseX = e.pageX;
+          mouseY = e.pageY;
+        }); 
+        
         function monthFormatter(val) {
           return months[val];
         }
@@ -36,7 +43,7 @@ angular.module('govhackFrontendApp')
         function dostuff() {
           d3.selectAll('.big')
             .transition()
-            .attr('r', rad + 4 + 'px')
+            .attr('r', rad + rad + 'px')
             .transition()
             .attr('r', rad + 'px');
           var curMonth = monthSlider.slider('getValue');
@@ -44,6 +51,7 @@ angular.module('govhackFrontendApp')
           ++curYear;
           //monthSlider.slider('setValue', curMonth);
           yearSlider.slider('setValue', curYear % yearSlider.slider('getAttribute', 'max'));
+          $('#display-date').text(months[curMonth] + ', ' + curYear);
         }
 
         function updateData(response) {
@@ -60,13 +68,28 @@ angular.module('govhackFrontendApp')
           $(site)
             .attr('transform', 'translate(' + (pos.x - auTLP.x) + ', ' + (pos.y - auTLP.y) + ')');
         }
+        
+        function showData(d)
+        {
+          $('#map-info').html(
+            '<div class="info-label">' + d.label + '</div>' +
+            '<div class="info-text">' + 
+            '<div class="row">' +
+            '<div class="col-lg-5">Latitude:</div>' +
+            '<div class="col-lg-7">' + d.lat + '</div>' +
+            '<div class="col-lg-5">Longitude:</div>' +
+            '<div class="col-lg-7">' + d.long + '</div>' +
+            '</div>' +
+            '</div>'
+          );
+        }
 
         function initialize() {
           var map = new google.maps.Map(document.getElementById('map'), {
             center: auC,
             zoom:4,
-            mapTypeId:google.maps.MapTypeId.TERRAIN,
-            styles: [{"featureType":"administrative","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"hue":"#727D82"},{"lightness":-30},{"saturation":-80}]},{"featureType":"water","elementType":"all","stylers":[{"visibility":"simplified"},{"hue":"#F3F4F4"},{"lightness":80},{"saturation":-80}]}]
+            disableDefaultUI: true,
+            styles: [{"featureType":"administrative","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"hue":"#d0e19a"},{"lightness":-45},{"saturation":-60}]},{"featureType":"water","elementType":"all","stylers":[{"visibility":"simplified"},{"hue":"#ffffff"},{"lightness":100},{"saturation":100}]}]
           });
 
           overlay = new google.maps.OverlayView();
@@ -81,7 +104,7 @@ angular.module('govhackFrontendApp')
               auBRP = projection.fromLatLngToDivPixel(auBR);
               auCP = projection.fromLatLngToDivPixel(auC);
 
-              rad = (auBRP.x - auTLP.x) / 160;
+              rad = (auBRP.x - auTLP.x) / 800 + 5;
 
               svg.style('left', auTLP.x + 'px')
                 .style('top', auTLP.y + 'px')
@@ -109,6 +132,27 @@ angular.module('govhackFrontendApp')
                 .attr('cx', 0)
                 .attr('cy', 0)
                 .attr('fill', '#ff0000');
+              svg.selectAll('g')
+                .select('.small')
+                .on('mousemove', function(e) {
+                  if (currentMouseOver != this)
+                  {
+                    currentMouseOver = this;
+                    showData(scope.sites[this.__data__]);
+                  }
+                  $('#map-info')
+                    .css('left', mouseX + 10 + 'px')
+                    .css('top', mouseY - 60 + 'px')
+                    .show();
+                })
+                .on('mouseout', function(e) {
+                  if (currentMouseOver == this)
+                  {
+                    currentMouseOver = this;
+                    $('#map-info')
+                      .hide();
+                  }
+                });
 
               svg.selectAll('g')
                 .each(function(d) { alignSite(this, scope.sites[d]); });
