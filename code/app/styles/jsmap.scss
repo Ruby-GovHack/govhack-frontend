@@ -1,4 +1,5 @@
 #map {
+  float: left;
   width: 600px;
   height: 500px;
   svg {
@@ -15,4 +16,10 @@
       fill: #ffffff;
     }
   }
+}
+#map-controls {
+  float: right;
+  width: 180px;
+  height: 500px;
+  padding: 20px;
 }
