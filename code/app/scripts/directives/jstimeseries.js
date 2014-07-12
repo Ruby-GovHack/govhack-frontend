@@ -69,6 +69,14 @@ angular.module('govhackFrontendApp')
 
           new Rickshaw.Graph.HoverDetail({
             graph: graph
+            // xFormatter: function(x) {
+            //   return new Date(x * 1000).toString();
+            // }
+          });
+
+          new Rickshaw.Graph.RangeSlider({
+          	graph: graph,
+          	element: document.getElementById('preview'),
           });
 
           graph.render();
