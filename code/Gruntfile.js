@@ -269,6 +269,15 @@ module.exports = function (grunt) {
     //   dist: {}
     // },
 
+    uglify: {
+      options: {
+        mangle: {
+          // This is need to mack Rickshaw work after minification.  
+          except: ['$super']
+        }
+      }
+    },
+
     imagemin: {
       dist: {
         files: [{
