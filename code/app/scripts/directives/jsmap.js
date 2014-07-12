@@ -19,7 +19,9 @@ angular.module('govhackFrontendApp')
         scope.sites = {};
         var overlay;
 
-        
+        var currentMouseOver;
+        var mouseX = 0;
+        var mouseY = 0;
         var auTL = new google.maps.LatLng(-5, 110);
         var auC = new google.maps.LatLng(-28, 133);
         var auBR = new google.maps.LatLng(-49, 156);
@@ -29,6 +31,11 @@ angular.module('govhackFrontendApp')
         var projection;
         var rad = 0;
 
+        $(document).bind('mousemove', function(e) { 
+          mouseX = e.pageX;
+          mouseY = e.pageY;
+        }); 
+        
         function monthFormatter(val) {
           return months[val];
         }
@@ -36,7 +43,7 @@ angular.module('govhackFrontendApp')
         function dostuff() {
           d3.selectAll('.big')
             .transition()
-            .attr('r', rad + 4 + 'px')
+            .attr('r', rad + 8 + 'px')
             .transition()
             .attr('r', rad + 'px');
           var curMonth = monthSlider.slider('getValue');
@@ -66,7 +73,8 @@ angular.module('govhackFrontendApp')
             center: auC,
             zoom:4,
             mapTypeId:google.maps.MapTypeId.TERRAIN,
-            styles: [{"featureType":"administrative","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"hue":"#727D82"},{"lightness":-30},{"saturation":-80}]},{"featureType":"water","elementType":"all","stylers":[{"visibility":"simplified"},{"hue":"#ffffff"},{"lightness":100},{"saturation":100}]}]
+            disableDefaultUI: true,
+            styles: [{"featureType":"administrative","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"hue":"#EEDD33"},{"lightness":-40},{"saturation":-30}]},{"featureType":"water","elementType":"all","stylers":[{"visibility":"simplified"},{"hue":"#ffffff"},{"lightness":100},{"saturation":100}]}]
           });
 
           overlay = new google.maps.OverlayView();
@@ -108,7 +116,31 @@ angular.module('govhackFrontendApp')
                 .attr('r', rad)
                 .attr('cx', 0)
                 .attr('cy', 0)
-                .attr('fill', '#ff0000');
+                .attr('fill', '#ff0000')
+              svg.selectAll('g')
+                .on('mouseover', function(e) {
+                  if (currentMouseOver != this)
+                  {
+                    currentMouseOver = this;
+                    $('#map-info')
+                      .css('left', mouseX + 10 + 'px')
+                      .css('top', mouseY + 'px')
+                      .show();
+                  }
+                  else
+                  {
+                    $('#map-info')
+                      .show();
+                  }
+                })
+                .on('mouseout', function(e) {
+                  if (currentMouseOver == this)
+                  {
+                    currentMouseOver = this;
+                    $('#map-info')
+                      .hide();
+                  }
+                });
 
               svg.selectAll('g')
                 .each(function(d) { alignSite(this, scope.sites[d]); });
