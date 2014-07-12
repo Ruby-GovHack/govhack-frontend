@@ -429,7 +429,7 @@ module.exports = function (grunt) {
     'svgmin',
     'autoprefixer',
     'concat',
-    'ngmin',
+    //'ngmin',
     'copy:dist',
     'cdnify',
     'cssmin',
