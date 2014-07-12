@@ -6,8 +6,7 @@ angular.module('govhackFrontendApp')
       templateUrl: 'views/timeseries.html',
       restrict: 'E',
       link: function postLink(scope, element, attrs) {
-        var palette = new Rickshaw.Color.Palette(); 
-      //  var maxTemp = ["20.02", "18.48", "20.32", "9.61"]; 
+        var palette = new Rickshaw.Color.Palette();       
         var a = data.getTimeseries({
            'timeperiod': 'monthly',
            'dataset': 'acorn-sat',
