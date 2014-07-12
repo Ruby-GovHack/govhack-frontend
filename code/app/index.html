@@ -10,11 +10,13 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.css" />
     <!-- endbower -->
+    <link rel="stylesheet" href="bower_components/rickshaw/rickshaw.css" />
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/jsmap.css">
-    <link rel="stylesheet" href="bower_components/rickshaw/rickshaw.css" />
+    <link rel="stylesheet" href="styles/timeseries.css">
+    <link rel="stylesheet" href="styles/jstimeseries.css">
     <!-- endbuild -->
   </head>
   <body ng-app="govhackFrontendApp">
@@ -29,6 +31,7 @@
     <![endif]-->
 
     <script src='//maps.googleapis.com/maps/api/js?sensor=false'></script>
+    
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/modernizr/modernizr.js"></script>
@@ -71,6 +74,7 @@
     <script src="scripts/controllers/mojgan.js"></script>
     <script src="scripts/services/data.js"></script>
     <script src="scripts/directives/timeseries.js"></script>
+    <script src="scripts/directives/jstimeseries.js"></script>
     <!-- endbuild -->
 </body>
 </html>
