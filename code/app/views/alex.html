@@ -1,5 +1,24 @@
 <js-timeseries site="{{site}}" month={{month}}></js-timeseries>
 <br><br><br>
-<select class="js-timeseries-chart" ng-model="site" ng-options="key as val.label for (key, val) in sites.data"></select>
+<select class="centerselect" ng-model="site" ng-options="key as val.label for (key, val) in sites.data"></select>
 <br>
-<select class="js-timeseries-chart" ng-model="month" ng-options="monthObj.monthId as monthObj.monthName for monthObj in months"></select>
+<select class="centerselect" ng-model="month" ng-options="monthObj.monthId as monthObj.monthName for monthObj in months"></select>
+<div style="margin-top: 20px; clear: both;">
+<h4>Climate Data Timeseries</h4>
+<p>
+These graphs plot statistics for temperatures during the specified month, at the specified location, over the years since temperature recording began at the location.
+</p>
+<p>
+  Two sets of temperatures are plotted. The <strong>maximum</strong> temperatures recorded during the month, and the <strong>minimum</strong> temperatures recorded during the month (green and brown, respectively).
+</p>
+<p>
+  The statistics included are:
+  <ul>
+    <li><strong>Rolling Means:</strong> The mean of the maximum or minimum temperature for the month over the past ten years (blue and light grey, respectively).
+    <li><strong>Rolling Highest:</strong> The highest maximum or minimum reached for the month in the past ten years (red and purple, respectively).
+    <li><strong>Rolling Lowest:</strong> The lowest maximum or minimum reached for the month in the past ten years (aqua and dark grey, respectively).
+  </ul>
+</p>
+<p>
+  Mouse over the lines to find which statistic they represent.
+</p>

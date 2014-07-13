@@ -13,42 +13,42 @@ angular.module('govhackFrontendApp')
         var palette = new Rickshaw.Color.Palette();
 
         var maxTenMaxSeries = {
-            name: 'Rolling Ten Year Maximum',
+            name: 'Maximum Rolling Highest',
             data: [],
             color: palette.color()
         };
         var maxTempSeries = {
-            name: 'Maximum Temperature for Month',
+            name: 'Monthly Maximum Temperature',
             data: [],
             color: palette.color()
         };
         var maxTenMinSeries = {
-            name: 'Rolling Ten Year Minimum of Maximums',
+            name: 'Maximum Rolling Lowest',
             data: [],
             color: palette.color()
         };
         var maxMovingMeanSeries = {
-            name: 'Rolling Mean of Maximums',
+            name: 'Maximum Rolling Mean',
             data: [],
             color: palette.color()
         };
         var minTenMaxSeries = {
-            name: 'Rolling Ten Year Maximum of Minimums',
+            name: 'Minimum Rolling Highest',
             data: [],
             color: palette.color()
         };
         var minTempSeries = {
-            name: 'Minimum Temperature for Month',
+            name: 'Monthly Minimum Temperature',
             data: [],
             color: palette.color()
         };
         var minTenMinSeries = {
-            name: 'Rolling Ten Year Minimum',
+            name: 'Minimum Rolling Lowest',
             data: [],
             color: palette.color()
         };
         var minMovingMeanSeries = {
-            name: 'Rolling Mean of Minimums',
+            name: 'Minimum Rolling Mean',
             data: [],
             color: palette.color()
         };
