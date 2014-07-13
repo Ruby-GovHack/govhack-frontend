@@ -129,12 +129,26 @@ angular.module('govhackFrontendApp')
                 .select('.small')
                   .transition()
                   .style('fill', rgb2hex([Math.floor(colP * 120 + 135), Math.floor((1 - colP) * 255), 0]))
-                  .attr('r', rad + rad * percent * percentR);
-              d3.select(site)
-                .select('.big')
-                  .transition()
-                  .style('fill', rgb2hex([Math.floor(colPR * 120 + 135), Math.floor((1 - colPR) * 255), 0]))
-                  .attr('r', rad + rad * percentR * percentR);
+                  .attr('r', rad + rad * percent * percentR * 2);
+              if (sTemp == rTemp)
+              {
+                d3.select(site)
+                  .select('.big')
+                    .transition()
+                    .style('fill', '#ffff00')
+                    .style('opacity', 0.8)
+                    .attr('r', rad + rad * percentR * percentR * 6)
+                    .transition()
+                    .style('opacity', '')
+                    .style('fill', rgb2hex([Math.floor(colPR * 120 + 135), Math.floor((1 - colPR) * 255), 0]))
+                    .attr('r', rad + rad * percentR * percentR * 2);
+              } else {
+                d3.select(site)
+                  .select('.big')
+                    .transition()
+                    .style('fill', rgb2hex([Math.floor(colPR * 120 + 135), Math.floor((1 - colPR) * 255), 0]))
+                    .attr('r', rad + rad * percentR * percentR * 2);
+              }
             } else {
               d3.select(site)
                 .select('.small')
