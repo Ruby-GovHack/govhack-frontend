@@ -1,1 +1,4 @@
-<js-timeseries site="023090"></js-timeseries>
+<js-timeseries site="{{site}}"></js-timeseries>
+<br><br><br>
+<select ng-model="site" ng-options="key as val.label for (key, val) in sites.data"></select>
+<p>{{site}}</p>

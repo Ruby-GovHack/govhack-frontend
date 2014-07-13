@@ -23,6 +23,7 @@
     "d3": false,
     "Rickshaw": false,
     "moment": false,
-    "Math": false
+    "Math": false,
+    "$": false
   }
 }

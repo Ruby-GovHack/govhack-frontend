@@ -1,60 +1,58 @@
 'use strict';
 
 angular.module('govhackFrontendApp')
-  .directive('jsTimeseries', function ($log, data) {
+  .directive('jsTimeseries', function (data) {
     return {
       templateUrl: 'views/jstimeseries.html',
       restrict: 'E',
       link: function ($scope, $element, $attrs) {
-        data.getTimeseries({
-           'timeperiod': 'monthly',
-           'dataset': 'acorn-sat',
-           'site': $attrs.site,
-           'high_max_temp': true,
-           'low_min_temp': true
-        }).$promise.then(function(timeseries) {
-          var maxTempData = [];
-          var maxTempMin = null;
-          var maxTempMax = null;
+        var graph = null;
+        var yAxix = null;
+
+        var palette = new Rickshaw.Color.Palette();
+
+        var tempScale = null;
+
+        var maxTempSeries = {
+            name: 'Max Temp',
+            data: [],
+            color: palette.color()
+        };
+        var minTempSeries = {
+            name: 'Min Temp',
+            data: [],
+            color: palette.color()
+        };
+
+        var setupSeries = function(timeseries) {
+          // Clears the array.
+          maxTempSeries.data.length = 0;
           for (var month in timeseries.data) {
             var observation = timeseries.data[month];
             var date = moment(month, 'YYYYMM');
             if (date.month() === 0) {
               var maxTemp = observation.high_max_temp;
-              if (angular.isUndefined(maxTemp)) {
+              if (angular.isUndefined(maxTemp) || maxTemp === null) {
                 continue;
               }
-              if (maxTempMin === null || maxTemp < maxTempMin) {
-                maxTempMin = maxTemp;
-              }
-              if (maxTempMax === null || maxTemp > maxTempMax) {
-                maxTempMax = maxTemp;
-              }
-              maxTempData.push({
+              maxTempSeries.data.push({
                 x: date.unix(),
                 y: maxTemp
               });
             }
           }
 
-          var minTempData = [];
-          var minTempMin = null;
-          var minTempMax = null;
+          // Clears the array.
+          minTempSeries.data.length = 0;
           for (var month in timeseries.data) {
             var observation = timeseries.data[month];
             var date = moment(month, 'YYYYMM');
             if (date.month() === 0) {
               var minTemp = observation.low_min_temp;
-              if (angular.isUndefined(minTemp)) {
+              if (angular.isUndefined(minTemp) || minTemp === null) {
                 continue;
               }
-              if (minTempMin === null || minTemp < minTempMin) {
-                minTempMin = minTemp;
-              }
-              if (minTempMax === null || minTemp > minTempMax) {
-                minTempMax = minTemp;
-              }
-              minTempData.push({
+              minTempSeries.data.push({
                 x: date.unix(),
                 y: minTemp
               });
@@ -62,66 +60,82 @@ angular.module('govhackFrontendApp')
           }
 
           // Sort by x axis.
-          maxTempData.sort(function(a, b) {
-            return parseFloat(a.x) - parseFloat(b.x)
+          maxTempSeries.data.sort(function(a, b) {
+            return parseFloat(a.x) - parseFloat(b.x);
           });
-          minTempData.sort(function(a, b) {
-            return parseFloat(a.x) - parseFloat(b.x)
+          minTempSeries.data.sort(function(a, b) {
+            return parseFloat(a.x) - parseFloat(b.x);
           });
 
-          var tempScale = d3.scale.linear()
+          var combinedYData = $.map(
+            maxTempSeries.data.concat(minTempSeries.data),
+            function(data) {
+              return data.y;
+            });
+          tempScale = d3.scale.linear()
             .domain([
-                Math.min(maxTempMin, minTempMin),
-                Math.max(maxTempMax, minTempMax)])
+               Math.min.apply(Math, combinedYData),
+               Math.max.apply(Math, combinedYData)
+             ])
             .nice();
+          maxTempSeries.scale = tempScale;
+          minTempSeries.scale = tempScale;
+        };
 
-          var palette = new Rickshaw.Color.Palette();
+        $attrs.$observe('site', function(site) {
+          data.getTimeseries({
+             'timeperiod': 'monthly',
+             'dataset': 'acorn-sat',
+             'site': site,
+             'high_max_temp': true,
+             'low_min_temp': true
+          }).$promise.then(function(timeseries) {
+            setupSeries(timeseries);
 
-          var graph = new Rickshaw.Graph({
-            element: document.getElementById('chart'),
-            width: 780,
-            height: 250,
-            renderer: 'line',
-            series: [{
-                name: 'Max Temp',
-                data: maxTempData,
-                color: palette.color(),
+            if (graph === null) {
+              graph = new Rickshaw.Graph({
+                element: $element.find('.js-timeseries-chart').get(0),
+                width: 700,
+                height: 250,
+                renderer: 'line',
+                series: [maxTempSeries, minTempSeries]
+              });
+
+              new Rickshaw.Graph.Axis.Time({
+                graph: graph
+              });
+
+              yAxix = new Rickshaw.Graph.Axis.Y.Scaled({
+                element: $element.find('.js-timeseries-y-axis').get(0),
+                graph: graph,
+                orientation: 'left',
+                tickFormat: function(y) {
+                  return Rickshaw.Fixtures.Number.formatKMBT(y) + '°C';
+                },
                 scale: tempScale
-            }, {
-                name: 'Min Temp',
-                data: minTempData,
-                color: palette.color(),
-                scale: tempScale
-            }]
-          });
+              });
 
-          new Rickshaw.Graph.Axis.Time({
-            graph: graph
-          });
+              new Rickshaw.Graph.HoverDetail({
+                graph: graph,
+                formatter: function(series, x, y) {
+                  return series.name + ': ' + y.toFixed(1) + '°C';
+                },
+                xFormatter: function(x) {
+                  return moment.unix(x).format('MMM YYYY');
+                }
+              });
 
-          new Rickshaw.Graph.Axis.Y.Scaled({
-          element: document.getElementById('y_axis'),
-            graph: graph,
-            orientation: 'left',
-            tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-            scale: tempScale
-          });
-
-          new Rickshaw.Graph.HoverDetail({
-            graph: graph,
-            xFormatter: function(x) {
-              return moment.unix(x).format('MMM YYYY');
+              new Rickshaw.Graph.RangeSlider({
+                graph: graph,
+                element: $element.find('.js-timeseries-preview').get(0)
+              });
             }
-          });
 
-          new Rickshaw.Graph.RangeSlider({
-          	graph: graph,
-          	element: document.getElementById('preview'),
-          });
+            yAxix.scale = tempScale;
 
-          graph.render();
-        }, function() {
-          $log.log('Error getting data in jstimeseries.js.')
+            graph.render();
+            yAxix.render();
+          });
         });
       }
     };
