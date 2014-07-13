@@ -10,8 +10,8 @@
     width: 10px;
     height: 10px;
     .big {
-      fill: #ff0000;
-      opacity: 0.3;
+      fill: #aaa;
+      opacity: 0.2;
     }
     .small {
       fill: #aaa;
@@ -53,13 +53,13 @@
   .info-text {
     padding-left: 10px;
   }
-  .col-lg-5 {
-    text-align: right;
-    font-weight: bold;
+  .col-lg-6 {
+    text-align: left;
     padding: 0px 5px;
   }
-  .col-lg-7 {
-    text-align: left;
+  .col-lg-6:first-of-type {
+    text-align: right;
+    font-weight: bold;
     padding: 0px 5px;
   }
 }

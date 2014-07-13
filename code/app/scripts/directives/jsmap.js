@@ -14,7 +14,7 @@ angular.module('govhackFrontendApp')
         var curMonth = 0;
         var curYear = 0;
         
-        var tempRange = [-10, 60];
+        var tempRange = [0, 70];
         
         scope.sites = {};
         var overlay;
@@ -33,8 +33,8 @@ angular.module('govhackFrontendApp')
         var projection;
         var rad = 0;
 
-        $('#min-temp').click(function() { mapType = this.value; });
-        $('#max-temp').click(function() { mapType = this.value; });
+        $('#min-temp').click(function() { mapType = this.value; updateSites(); });
+        $('#max-temp').click(function() { mapType = this.value; updateSites(); });
         
         $(document).bind('mousemove', function(e) { 
           mouseX = e.pageX;
@@ -79,8 +79,8 @@ angular.module('govhackFrontendApp')
               .attr('r', rad + 'px');*/
             //monthSlader.slader('setValue', curMonth);
             yearSlader.slader('setValue', (yearSlader.slader('getValue') + 1) % yearSlader.slader('getAttribute', 'max'));
-            setDates();
           }
+          setDates();
         }
         
         function updateSites()
@@ -107,17 +107,43 @@ angular.module('govhackFrontendApp')
             .attr('transform', 'translate(' + (pos.x - auTLP.x) + ', ' + (pos.y - auTLP.y) + ')');
           if (site !== currentMouseOver) {
             if (typeof d.data !== 'undefined' && typeof d.data[curYear * 100 + curMonth + 1] !== 'undefined') {
-              var percent = d.data[curYear * 100 + curMonth].high_max_temp / tempRange[1];
+              var sTemp = 0;
+              var rTemp = 0;
+              if (mapType == 'min-temp') {
+                sTemp = (d.data[curYear * 100 + curMonth + 1].low_min_temp + 10);
+                rTemp = (d.data[curYear * 100 + curMonth + 1].min_ten_min + 10);
+              } else {
+                sTemp = (d.data[curYear * 100 + curMonth + 1].high_max_temp + 10);
+                rTemp = (d.data[curYear * 100 + curMonth + 1].max_ten_max + 10);
+              }
+              var percent = sTemp / tempRange[1];
+              var percentR = rTemp / tempRange[1];
+              var colP = percent;
+              var colPR = percentR;
               if (mapType == 'min-temp')
+              {
                 percent = 1 - percent;
+                percentR = 1 - percentR;
+              }
               d3.select(site)
                 .select('.small')
                   .transition()
-                  .style('fill', rgb2hex([Math.floor(percent * 120 + 135), Math.floor((1 - percent) * 255), 0]))
-                  .attr('r', rad + rad * percent * 2);
+                  .style('fill', rgb2hex([Math.floor(colP * 120 + 135), Math.floor((1 - colP) * 255), 0]))
+                  .attr('r', rad + rad * percent * percentR);
+              d3.select(site)
+                .select('.big')
+                  .transition()
+                  .style('fill', rgb2hex([Math.floor(colPR * 120 + 135), Math.floor((1 - colPR) * 255), 0]))
+                  .attr('r', rad + rad * percentR * percentR);
             } else {
               d3.select(site)
                 .select('.small')
+                  .transition()
+                  .style('fill', '')
+                  .style('opacity', '')
+                  .attr('r', rad);
+              d3.select(site)
+                .select('.big')
                   .transition()
                   .style('fill', '')
                   .style('opacity', '')
@@ -139,17 +165,35 @@ angular.module('govhackFrontendApp')
         
         function showData(d)
         {
-          $('#map-info').html(
+          var cont = 
             '<div class="info-label">' + d.label + '</div>' +
             '<div class="info-text">' + 
             '<div class="row">' +
-            '<div class="col-lg-5">Latitude:</div>' +
-            '<div class="col-lg-7">' + d.lat + '</div>' +
-            '<div class="col-lg-5">Longitude:</div>' +
-            '<div class="col-lg-7">' + d.long + '</div>' +
+            '<div class="col-lg-6">Latitude:</div>' +
+            '<div class="col-lg-6">' + d.lat + '</div>' +
+            '</div><div class="row">' +
+            '<div class="col-lg-6">Longitude:</div>' +
+            '<div class="col-lg-6">' + d.long + '</div>';
+          if (typeof d.data[curYear * 100 + curMonth + 1] !== 'undefined')
+          {
+            cont += 
+            '</div><div class="row">' +
+            '<div class="col-lg-6">Minimum:</div>' +
+            '<div class="col-lg-6">' + d.data[curYear * 100 + curMonth + 1].low_min_temp + '</div>' +
+            '</div><div class="row">' +
+            '<div class="col-lg-6">Maximum:</div>' +
+            '<div class="col-lg-6">' + d.data[curYear * 100 + curMonth + 1].high_max_temp + '</div>' +
+            '</div><div class="row">' +
+            '<div class="col-lg-6">10 Year Min:</div>' +
+            '<div class="col-lg-6">' + d.data[curYear * 100 + curMonth + 1].min_ten_min + '</div>' +
+            '</div><div class="row">' +
+            '<div class="col-lg-6">10 Year Max:</div>' +
+            '<div class="col-lg-6">' + d.data[curYear * 100 + curMonth + 1].max_ten_max + '</div>'
+          }
+          cont +=
             '</div>' +
-            '</div>'
-          );
+            '</div>';
+          $('#map-info').html(cont);
         }
 
         function initialize() {
@@ -193,7 +237,7 @@ angular.module('govhackFrontendApp')
               auBRP = projection.fromLatLngToDivPixel(auBR);
               auCP = projection.fromLatLngToDivPixel(auC);
 
-              rad = (auBRP.x - auTLP.x) / 800 + 3;
+              rad = (auBRP.x - auTLP.x) / 800 + 4;
 
               svg.style('left', auTLP.x + 'px')
                 .style('top', auTLP.y + 'px')
@@ -250,7 +294,7 @@ angular.module('govhackFrontendApp')
           };
           overlay.setMap(map);
 
-          setInterval(dostuff, 3000);
+          setInterval(dostuff, 2000);
         }
 
         function updateYearly(response)
@@ -278,6 +322,11 @@ angular.module('govhackFrontendApp')
             if (typeof loadedYears[year] !== 'undefined') {
               ++year;
             }
+            /*
+              var auTL = new google.maps.LatLng(-5, 110);
+              var auC = new google.maps.LatLng(-28, 133);
+              var auBR = new google.maps.LatLng(-49, 156);
+            */
             loadedYears[year] = 1;
             loadedYears[year + 1] = 1;
             data.getTimeseries({
