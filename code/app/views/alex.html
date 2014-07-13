@@ -1,5 +1,5 @@
 <js-timeseries site="{{site}}" month={{month}}></js-timeseries>
 <br><br><br>
-<select ng-model="site" ng-options="key as val.label for (key, val) in sites.data"></select>
+<select class="js-timeseries-chart" ng-model="site" ng-options="key as val.label for (key, val) in sites.data"></select>
 <br>
-<select ng-model="month" ng-options="monthObj.monthId as monthObj.monthName for monthObj in months"></select>
+<select class="js-timeseries-chart" ng-model="month" ng-options="monthObj.monthId as monthObj.monthName for monthObj in months"></select>

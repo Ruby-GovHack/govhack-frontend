@@ -1,17 +1,16 @@
 'use strict';
 
 angular.module('govhackFrontendApp')
-  .directive('jsTimeseries', function (data) {
+  .directive('jsTimeseries', function(data) {
     return {
       templateUrl: 'views/jstimeseries.html',
       restrict: 'E',
       link: function ($scope, $element, $attrs) {
         var graph = null;
         var yAxix = null;
+        var tempScale = null;
 
         var palette = new Rickshaw.Color.Palette();
-
-        var tempScale = null;
 
         var maxTenMaxSeries = {
             name: 'Rolling Ten Year Maximum',
@@ -34,7 +33,7 @@ angular.module('govhackFrontendApp')
             color: palette.color()
         };
         var minTenMaxSeries = {
-            name: 'Rolling Ten Year Minimums',
+            name: 'Rolling Ten Year Maximum of Minimums',
             data: [],
             color: palette.color()
         };
@@ -44,7 +43,7 @@ angular.module('govhackFrontendApp')
             color: palette.color()
         };
         var minTenMinSeries = {
-            name: 'Rolling Ten Year Minimum of Minimums',
+            name: 'Rolling Ten Year Minimum',
             data: [],
             color: palette.color()
         };
@@ -119,95 +118,95 @@ angular.module('govhackFrontendApp')
               });
             }
           }
-            // Clears the array.
-            minTenMaxSeries.data.length = 0;
-            for (var month in timeseries.data) {
-              var observation = timeseries.data[month];
-              var date = moment(month, 'YYYYMM');
-              if (date.month() == $attrs.month) {
-                var temp = observation.min_ten_max;
-                if (angular.isUndefined(temp) || temp === null) {
-                  continue;
-                }
-                minTenMaxSeries.data.push({
-                  x: date.unix(),
-                  y: temp
-                });
+          // Clears the array.
+          minTenMaxSeries.data.length = 0;
+          for (var month in timeseries.data) {
+            var observation = timeseries.data[month];
+            var date = moment(month, 'YYYYMM');
+            if (date.month() == $attrs.month) {
+              var temp = observation.min_ten_max;
+              if (angular.isUndefined(temp) || temp === null) {
+                continue;
               }
+              minTenMaxSeries.data.push({
+                x: date.unix(),
+                y: temp
+              });
             }
-            // Clears the array.
-            minTempSeries.data.length = 0;
-            for (var month in timeseries.data) {
-              var observation = timeseries.data[month];
-              var date = moment(month, 'YYYYMM');
-              if (date.month() == $attrs.month) {
-                var temp = observation.low_min_temp;
-                if (angular.isUndefined(temp) || temp === null) {
-                  continue;
-                }
-                minTempSeries.data.push({
-                  x: date.unix(),
-                  y: temp
-                });
+          }
+          // Clears the array.
+          minTempSeries.data.length = 0;
+          for (var month in timeseries.data) {
+            var observation = timeseries.data[month];
+            var date = moment(month, 'YYYYMM');
+            if (date.month() == $attrs.month) {
+              var temp = observation.low_min_temp;
+              if (angular.isUndefined(temp) || temp === null) {
+                continue;
               }
+              minTempSeries.data.push({
+                x: date.unix(),
+                y: temp
+              });
             }
-            // Clears the array.
-            minTenMinSeries.data.length = 0;
-            for (var month in timeseries.data) {
-              var observation = timeseries.data[month];
-              var date = moment(month, 'YYYYMM');
-              if (date.month() == $attrs.month) {
-                var temp = observation.min_ten_min;
-                if (angular.isUndefined(temp) || temp === null) {
-                  continue;
-                }
-                minTenMinSeries.data.push({
-                  x: date.unix(),
-                  y: temp
-                });
+          }
+          // Clears the array.
+          minTenMinSeries.data.length = 0;
+          for (var month in timeseries.data) {
+            var observation = timeseries.data[month];
+            var date = moment(month, 'YYYYMM');
+            if (date.month() == $attrs.month) {
+              var temp = observation.min_ten_min;
+              if (angular.isUndefined(temp) || temp === null) {
+                continue;
               }
+              minTenMinSeries.data.push({
+                x: date.unix(),
+                y: temp
+              });
             }
-            // Clears the array.
-            minMovingMeanSeries.data.length = 0;
-            for (var month in timeseries.data) {
-              var observation = timeseries.data[month];
-              var date = moment(month, 'YYYYMM');
-              if (date.month() == $attrs.month) {
-                var temp = observation.min_moving_mean;
-                if (angular.isUndefined(temp) || temp === null) {
-                  continue;
-                }
-                minMovingMeanSeries.data.push({
-                  x: date.unix(),
-                  y: temp
-                });
+          }
+          // Clears the array.
+          minMovingMeanSeries.data.length = 0;
+          for (var month in timeseries.data) {
+            var observation = timeseries.data[month];
+            var date = moment(month, 'YYYYMM');
+            if (date.month() == $attrs.month) {
+              var temp = observation.min_moving_mean;
+              if (angular.isUndefined(temp) || temp === null) {
+                continue;
               }
+              minMovingMeanSeries.data.push({
+                x: date.unix(),
+                y: temp
+              });
             }
+          }
 
           // Sort by x axis.
           maxTenMaxSeries.data.sort(function(a, b) {
-            return parseFloat(a.x) - parseFloat(b.x);
+            return a.x - b.x;
           });
           maxTempSeries.data.sort(function(a, b) {
-            return parseFloat(a.x) - parseFloat(b.x);
+            return a.x - b.x;
           });
           maxTenMinSeries.data.sort(function(a, b) {
-            return parseFloat(a.x) - parseFloat(b.x);
+            return a.x - b.x;
           });
           maxMovingMeanSeries.data.sort(function(a, b) {
-            return parseFloat(a.x) - parseFloat(b.x);
+            return a.x - b.x;
           });
           minTenMaxSeries.data.sort(function(a, b) {
-            return parseFloat(a.x) - parseFloat(b.x);
+            return a.x - b.x;
           });
           minTempSeries.data.sort(function(a, b) {
-            return parseFloat(a.x) - parseFloat(b.x);
+            return a.x - b.x;
           });
           minTenMinSeries.data.sort(function(a, b) {
-            return parseFloat(a.x) - parseFloat(b.x);
+            return a.x - b.x;
           });
           minMovingMeanSeries.data.sort(function(a, b) {
-            return parseFloat(a.x) - parseFloat(b.x);
+            return a.x - b.x;
           });
 
           var combinedYData = $.map(

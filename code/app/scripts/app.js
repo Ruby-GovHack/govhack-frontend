@@ -22,21 +22,9 @@ angular
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'
       })
-      .when('/alex', {
+      .when('/timeseries', {
         templateUrl: 'views/alex.html',
         controller: 'AlexCtrl'
-      })
-      .when('/max', {
-        templateUrl: 'views/max.html',
-        controller: 'MaxCtrl'
-      })
-      .when('/mojgan', {
-        templateUrl: 'views/mojgan.html',
-        controller: 'MojganCtrl'
-      })
-      .when('/team-members', {
-        templateUrl: 'views/team-members.html',
-        controller: 'TeamMembersCtrl'
       })
       .otherwise({
         template: '', // this is just needed to run the controller
