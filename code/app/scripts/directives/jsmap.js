@@ -8,6 +8,7 @@ angular.module('govhackFrontendApp')
       link: function postLink(scope, element) {
         var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         
+        var loadedYears = {};
         var playing = false;
         
         var curMonth = 0;
@@ -18,6 +19,7 @@ angular.module('govhackFrontendApp')
         scope.sites = {};
         var overlay;
         var svg;
+        var mapType = 'max-temp';
 
         var currentMouseOver;
         var mouseX = 0;
@@ -31,6 +33,9 @@ angular.module('govhackFrontendApp')
         var projection;
         var rad = 0;
 
+        $('#min-temp').click(function() { mapType = this.value; });
+        $('#max-temp').click(function() { mapType = this.value; });
+        
         $(document).bind('mousemove', function(e) { 
           mouseX = e.pageX;
           mouseY = e.pageY;
@@ -49,11 +54,20 @@ angular.module('govhackFrontendApp')
         
         var yearSlader = $('#year-slader').slader({
           tooltip: 'always'
-        });
+        }).on('slide', setDates);
         var monthSlader = $('#month-slader').slader({
           tooltip: 'always',
           formater: monthFormatter
-        });
+        }).on('slide', setDates);
+        
+        function setDates() {
+            curMonth = monthSlader.slader('getValue');
+            curYear = yearSlader.slader('getValue');
+            $('#display-date-month').text(months[curMonth]);
+            $('#display-date-year').text(curYear);
+            loadYear(curYear);
+            updateSites();
+        }
         
         function dostuff() {
           if (playing)
@@ -63,14 +77,9 @@ angular.module('govhackFrontendApp')
               .attr('r', rad + rad + 'px')
               .transition()
               .attr('r', rad + 'px');*/
-            curMonth = monthSlader.slader('getValue');
-            curYear = yearSlader.slader('getValue');
-            ++curYear;
             //monthSlader.slader('setValue', curMonth);
-            yearSlader.slader('setValue', curYear % yearSlader.slader('getAttribute', 'max'));
-            $('#display-date-month').text(months[curMonth]);
-            $('#display-date-year').text(curYear);
-            updateSites();
+            yearSlader.slader('setValue', (yearSlader.slader('getValue') + 1) % yearSlader.slader('getAttribute', 'max'));
+            setDates();
           }
         }
         
@@ -89,29 +98,6 @@ angular.module('govhackFrontendApp')
             //  scope.sites[key] = val;
             //}
           //});
-          scope.sites['023090'].data = {};
-          $.extend(scope.sites['023090'].data, {
-            "200501":{"month":"01-2005","high_max_temp":41.8},
-            "200502":{"month":"02-2005","high_max_temp":42.8},
-            "200503":{"month":"03-2005","high_max_temp":33.8},
-            "200504":{"month":"04-2005","high_max_temp":34.8},
-            "200505":{"month":"05-2005","high_max_temp":35.8},
-            "200506":{"month":"06-2005","high_max_temp":36.8},
-            "200507":{"month":"07-2005","high_max_temp":37.7},
-            "200508":{"month":"08-2005","high_max_temp":48.8},
-            "200509":{"month":"09-2005","high_max_temp":49.9},
-            "200510":{"month":"10-2005","high_max_temp":41.0},
-            "200511":{"month":"11-2005","high_max_temp":41.1},
-            "200512":{"month":"12-2005","high_max_temp":21.2},
-            "200601":{"month":"01-2006","high_max_temp":21.1},
-            "200602":{"month":"02-2006","high_max_temp":21.2},
-            "200603":{"month":"03-2006","high_max_temp":21.3},
-            "200604":{"month":"04-2006","high_max_temp":21.4},
-            "200605":{"month":"05-2006","high_max_temp":21.5},
-            "200606":{"month":"06-2006","high_max_temp":11.6},
-            "200607":{"month":"07-2006","high_max_temp":11.7},
-            "200608":{"month":"08-2006","high_max_temp":41.8}
-          });
           overlay.draw();
         }
 
@@ -120,12 +106,15 @@ angular.module('govhackFrontendApp')
           $(site)
             .attr('transform', 'translate(' + (pos.x - auTLP.x) + ', ' + (pos.y - auTLP.y) + ')');
           if (site !== currentMouseOver) {
-            if (typeof d.data !== 'undefined' && typeof d.data[curYear * 100 + curMonth] !== 'undefined') {
+            if (typeof d.data !== 'undefined' && typeof d.data[curYear * 100 + curMonth + 1] !== 'undefined') {
+              var percent = d.data[curYear * 100 + curMonth].high_max_temp / tempRange[1];
+              if (mapType == 'min-temp')
+                percent = 1 - percent;
               d3.select(site)
                 .select('.small')
                   .transition()
-                  .style('fill', '#ffaa00')
-                  .attr('r', rad + rad * d.data[curYear * 100 + curMonth].high_max_temp / tempRange[1]);
+                  .style('fill', rgb2hex([Math.floor(percent * 120 + 135), Math.floor((1 - percent) * 255), 0]))
+                  .attr('r', rad + rad * percent * 2);
             } else {
               d3.select(site)
                 .select('.small')
@@ -135,6 +124,17 @@ angular.module('govhackFrontendApp')
                   .attr('r', rad);
             }
           }
+        }
+        
+        var hexDigits = new Array
+          ("0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"); 
+
+        function rgb2hex(rgb) {
+          return "#" + hex(rgb[0]) + hex(rgb[1]) + hex(rgb[2]);
+        }
+
+        function hex(x) {
+          return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
         }
         
         function showData(d)
@@ -193,7 +193,7 @@ angular.module('govhackFrontendApp')
               auBRP = projection.fromLatLngToDivPixel(auBR);
               auCP = projection.fromLatLngToDivPixel(auC);
 
-              rad = (auBRP.x - auTLP.x) / 800 + 4;
+              rad = (auBRP.x - auTLP.x) / 800 + 3;
 
               svg.style('left', auTLP.x + 'px')
                 .style('top', auTLP.y + 'px')
@@ -232,7 +232,7 @@ angular.module('govhackFrontendApp')
                   d3.select(this)
                     .style('fill', '#ffffff')
                     .style('opacity', '1')
-                    .attr('r', rad * 2);
+                    .attr('r', rad * 3);
                   $('#map-info')
                     .css('left', mouseX + 10 + 'px')
                     .css('top', mouseY - 60 + 'px')
@@ -250,11 +250,52 @@ angular.module('govhackFrontendApp')
           };
           overlay.setMap(map);
 
-          setInterval(dostuff, 1000);
+          setInterval(dostuff, 3000);
         }
 
+        function updateYearly(response)
+        {
+          $.each(response.data, function(key, val) {
+            if (typeof scope.sites[key] !== 'undefined')
+            {
+              if (typeof scope.sites[key].data === 'undefined') {
+                scope.sites[key].data = response.data[key];
+              } else {
+                $.extend(scope.sites[key].data, response.data[key]);
+              }
+            }
+          });
+          updateSites();
+        }
+        
         initialize();
         data.getSites({ dataset: 'acorn-sat' }).$promise.then(updateData);
+        
+        function loadYear(year)
+        {
+          if (typeof loadedYears[year] === 'undefined' || typeof loadedYears[year + 1] === 'undefined')
+          {
+            if (typeof loadedYears[year] !== 'undefined') {
+              ++year;
+            }
+            loadedYears[year] = 1;
+            loadedYears[year + 1] = 1;
+            data.getTimeseries({
+               'timeperiod': 'monthly',
+               'dataset': 'acorn-sat',
+               'high_max_temp': true,
+               'low_min_temp': true,
+               'max_ten_max': true,
+               'min_ten_min': true,
+               'start': '01-' + year,
+               'end': '12-' + (year + 1)/*,
+               'north': '-40',
+               'south': '-49',
+               'west': '143',
+               'east': '156'*/
+            }).$promise.then(updateYearly);
+          }
+        }
       }
     };
   });
