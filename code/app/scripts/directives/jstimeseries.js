@@ -30,7 +30,7 @@ angular.module('govhackFrontendApp')
           for (var month in timeseries.data) {
             var observation = timeseries.data[month];
             var date = moment(month, 'YYYYMM');
-            if (date.month() === 0) {
+            if (date.month() == $attrs.month) {
               var maxTemp = observation.high_max_temp;
               if (angular.isUndefined(maxTemp) || maxTemp === null) {
                 continue;
@@ -47,7 +47,7 @@ angular.module('govhackFrontendApp')
           for (var month in timeseries.data) {
             var observation = timeseries.data[month];
             var date = moment(month, 'YYYYMM');
-            if (date.month() === 0) {
+            if (date.month() == $attrs.month) {
               var minTemp = observation.low_min_temp;
               if (angular.isUndefined(minTemp) || minTemp === null) {
                 continue;
@@ -82,11 +82,18 @@ angular.module('govhackFrontendApp')
           minTempSeries.scale = tempScale;
         };
 
-        $attrs.$observe('site', function(site) {
+        var updateGraph = function() {
+          if (angular.isUndefined($attrs.site)
+             || $attrs.site === null
+             || angular.isUndefined($attrs.month)
+             || $attrs.month === null) {
+            return;
+          }
+
           data.getTimeseries({
              'timeperiod': 'monthly',
              'dataset': 'acorn-sat',
-             'site': site,
+             'site': $attrs.site,
              'high_max_temp': true,
              'low_min_temp': true
           }).$promise.then(function(timeseries) {
@@ -134,9 +141,11 @@ angular.module('govhackFrontendApp')
             yAxix.scale = tempScale;
 
             graph.render();
-            yAxix.render();
           });
-        });
+        };
+
+        $attrs.$observe('site', updateGraph);
+        $attrs.$observe('month', updateGraph);
       }
     };
   });
