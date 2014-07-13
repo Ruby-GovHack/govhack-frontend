@@ -174,7 +174,7 @@ angular.module('govhackFrontendApp')
             '</div><div class="row">' +
             '<div class="col-lg-6">Longitude:</div>' +
             '<div class="col-lg-6">' + d.long + '</div>';
-          if (typeof d.data[curYear * 100 + curMonth + 1] !== 'undefined')
+          if (typeof d['data'] !== 'undefined' && typeof d.data[curYear * 100 + curMonth + 1] !== 'undefined')
           {
             cont += 
             '</div><div class="row">' +
