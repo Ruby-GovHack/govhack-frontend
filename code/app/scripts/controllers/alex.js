@@ -2,5 +2,6 @@
 
 angular.module('govhackFrontendApp')
   .controller('AlexCtrl', function ($scope, data) {
-    // $scope.sites = data.getSites({ 'dataset': 'acorn-sat' });
+    $scope.site = '059040';
+    $scope.sites = data.getSites({ 'dataset': 'acorn-sat' });
   });

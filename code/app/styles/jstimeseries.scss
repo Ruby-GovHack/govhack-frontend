@@ -1,19 +1,22 @@
-#chart_container {
+js-timeseries {
   position: relative;
   display: inline-block;
 }
-#chart {
+.js-timeseries-chart {
   display: inline-block;
+  margin-left: 40px;
+  margin-right: 40px;
 }
-#y_axis {
-  position: absolute;
-  margin-left: -20px;
-  top: 0;
-  bottom: 0;
-  width: 20px;
-}
-#preview {
+.js-timeseries-preview {
   position: absolute;
   top: 250px;
-	margin-top: 10px;
+  margin-top: 10px;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+.js-timeseries-y-axis {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px;
 }
