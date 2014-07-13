@@ -5,12 +5,13 @@ angular.module('govhackFrontendApp')
     return {
       templateUrl: 'views/jstimeseries.html',
       restrict: 'E',
-      link: function postLink(scope, element, attrs) {
+      link: function ($scope, $element, $attrs) {
         data.getTimeseries({
            'timeperiod': 'monthly',
            'dataset': 'acorn-sat',
-           'site': '023090',
-           'high_max_temp': true
+           'site': $attrs.site,
+           'high_max_temp': true,
+           'low_min_temp': true
         }).$promise.then(function(timeseries) {
           var maxTempData = [];
           var maxTempMin = null;
@@ -36,32 +37,42 @@ angular.module('govhackFrontendApp')
             }
           }
 
-          // var minTempData = [];
-          // var minTempMin = null;
-          // var minTempMax = null;
-          // for (var month in timeseries.data) {
-          //   var observation = timeseries.data[month];
-          //   var date = moment(month, 'YYYYMM');
-          //   if (date.month() === 0) {
-          //     var minTemp = observation.high_min_temp;
-          //     if (angular.isUndefined(minTemp)) {
-          //       continue;
-          //     }
-          //     if (minTempMin === null || maxTemp < minTempMin) {
-          //       minTempMin = minTemp;
-          //     }
-          //     if (minTempMax === null || maxTemp > minTempMax) {
-          //       minTempMax = minTemp;
-          //     }
-          //     minTempData.push({
-          //       x: date.unix(),
-          //       y: minTemp
-          //     });
-          //   }
-          // }
+          var minTempData = [];
+          var minTempMin = null;
+          var minTempMax = null;
+          for (var month in timeseries.data) {
+            var observation = timeseries.data[month];
+            var date = moment(month, 'YYYYMM');
+            if (date.month() === 0) {
+              var minTemp = observation.low_min_temp;
+              if (angular.isUndefined(minTemp)) {
+                continue;
+              }
+              if (minTempMin === null || minTemp < minTempMin) {
+                minTempMin = minTemp;
+              }
+              if (minTempMax === null || minTemp > minTempMax) {
+                minTempMax = minTemp;
+              }
+              minTempData.push({
+                x: date.unix(),
+                y: minTemp
+              });
+            }
+          }
+
+          // Sort by x axis.
+          maxTempData.sort(function(a, b) {
+            return parseFloat(a.x) - parseFloat(b.x)
+          });
+          minTempData.sort(function(a, b) {
+            return parseFloat(a.x) - parseFloat(b.x)
+          });
 
           var tempScale = d3.scale.linear()
-            .domain([maxTempMin, maxTempMax])
+            .domain([
+                Math.min(maxTempMin, minTempMin),
+                Math.max(maxTempMax, minTempMax)])
             .nice();
 
           var palette = new Rickshaw.Color.Palette();
@@ -74,6 +85,11 @@ angular.module('govhackFrontendApp')
             series: [{
                 name: 'Max Temp',
                 data: maxTempData,
+                color: palette.color(),
+                scale: tempScale
+            }, {
+                name: 'Min Temp',
+                data: minTempData,
                 color: palette.color(),
                 scale: tempScale
             }]
